@@ -1,0 +1,112 @@
+[
+  {
+    "id": "什麼是通貨膨脹",
+    "folder": "什麼是通貨膨脹 2026-27",
+    "packageTitle": "什麼是通貨膨脹 2026-27",
+    "itemTitle": "什麼是通貨膨脹",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "制訂理財計劃",
+    "folder": "制訂理財計劃 2026-27",
+    "packageTitle": "制訂理財計劃 2026-27",
+    "itemTitle": "制訂理財計劃",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "強積金「可扣稅自願性供款」(TVC)",
+    "folder": "強積金「可扣稅自願性供款」(TVC) 2026-27",
+    "packageTitle": "強積金「可扣稅自願性供款」(TVC) 2026-27",
+    "itemTitle": "強積金「可扣稅自願性供款」(TVC)",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "待客承諾",
+    "folder": "待客承諾 2026-27",
+    "packageTitle": "待客承諾 2026-27",
+    "itemTitle": "待客承諾",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "自願醫保計劃 (VHIS) 及 年金與逆按揭",
+    "folder": "自願醫保計劃 (VHIS) 及 年金與逆按揭 2026-27",
+    "packageTitle": "自願醫保計劃 (VHIS) 及 年金與逆按揭 2026-27",
+    "itemTitle": "自願醫保計劃 (VHIS) 及 年金與逆按揭",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "財務策劃工具 I (貨幣巿場工具及債務證券)",
+    "folder": "財務策劃工具 I (貨幣巿場工具及債務證券) 2026-27",
+    "packageTitle": "財務策劃工具 I (貨幣巿場工具及債務證券) 2026-27",
+    "itemTitle": "財務策劃工具 I (貨幣巿場工具及債務證券)",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "財務策劃工具 II (股票)",
+    "folder": "財務策劃工具 II (股票) 2026-27",
+    "packageTitle": "財務策劃工具 II (股票) 2026-27",
+    "itemTitle": "財務策劃工具 II (股票)",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "財務策劃工具 III (衍生工具_地產_低變現能力投資_基金)",
+    "folder": "財務策劃工具 III (衍生工具_地產_低變現能力投資_基金) 2026-27",
+    "packageTitle": "財務策劃工具 III (衍生工具_地產_低變現能力投資_基金) 2026-27",
+    "itemTitle": "財務策劃工具 III (衍生工具_地產_低變現能力投資_基金)",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "資產增值基本法",
+    "folder": "資產增值基本法 2026-27",
+    "packageTitle": "資產增值基本法 2026-27",
+    "itemTitle": "資產增值基本法",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  },
+  {
+    "id": "風險與回報",
+    "folder": "風險與回報 2026-27",
+    "packageTitle": "風險與回報 2026-27",
+    "itemTitle": "風險與回報",
+    "scormVersion": "1.2",
+    "launchUrl": "res/index.html",
+    "scormType": "sco",
+    "masteryScore": null,
+    "typicalLearningTime": "01:00:00"
+  }
+]
