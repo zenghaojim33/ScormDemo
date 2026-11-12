@@ -15,6 +15,19 @@ export interface Course {
 
 export type CourseStatus = 'not-attempted' | 'in-progress' | 'completed' | 'passed' | 'failed';
 
+/** SCORM 1.2 cmi.interactions.N.* 逐題作答記錄（SetValue 流採集） */
+export interface InteractionRecord {
+  index: number;
+  id: string;
+  type: string;
+  weighting: string;
+  correctResponses: string[];
+  studentResponse: string;
+  result: string;
+  latency: string;
+  time: string;
+}
+
 export interface CourseProgress {
   status: CourseStatus;
   score?: {raw: number; min: number; max: number};
@@ -26,4 +39,6 @@ export interface CourseProgress {
   totalTime?: string;
   /** 上次回報的原始 lesson_status */
   lastStatus?: string;
+  /** 逐題作答記錄（本次 session 的 cmi.interactions 快照） */
+  interactions?: InteractionRecord[];
 }

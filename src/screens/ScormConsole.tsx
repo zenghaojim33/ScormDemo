@@ -25,6 +25,8 @@ export interface Entry {
   text: string;
   /** 可解釋的元素名或 API 事件名（有值 → 該行可點） */
   el?: string;
+  /** 點擊展開的原始內容（如本次 commit 的完整快照 JSON） */
+  detail?: string;
 }
 
 export const toneColor: Record<string, string> = {
@@ -77,6 +79,7 @@ export default function ScormConsole({
   const [consoleOpen, setConsoleOpen] = useState(true);
   const [noiseReduce, setNoiseReduce] = useState(true);
   const [selected, setSelected] = useState<Explanation | null>(null);
+  const [detailText, setDetailText] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const decodedPretty = useMemo(
@@ -110,23 +113,25 @@ export default function ScormConsole({
   }, [entries, noiseReduce]);
 
   const filtered = useMemo(() => {
-    if (filter === 'all') {
-      return merged;
-    }
-    return merged.filter(row => {
-      const e = row.entry;
-      if (filter === 'state') {
-        return e.kind === 'state';
-      }
-      if (filter === 'lifecycle') {
-        return e.kind === 'event' || e.kind === 'log';
-      }
-      return e.kind === filter;
-    });
+    const rows =
+      filter === 'all'
+        ? merged
+        : merged.filter(row => {
+            const e = row.entry;
+            if (filter === 'state') {
+              return e.kind === 'state';
+            }
+            if (filter === 'lifecycle') {
+              return e.kind === 'event' || e.kind === 'log';
+            }
+            return e.kind === filter;
+          });
+    // 最新在最上面（時間倒序）
+    return rows.slice().reverse();
   }, [merged, filter]);
 
   useEffect(() => {
-    listRef.current?.scrollToEnd({animated: false});
+    listRef.current?.scrollToOffset({offset: 0, animated: false});
   }, [filtered.length, consoleOpen]);
 
   const kindPrefix: Record<EntryKind, string> = {
@@ -201,10 +206,17 @@ export default function ScormConsole({
             renderItem={({item}) => {
               const e = item.entry;
               const explanation = e.el ? explain(e.el) : null;
+              const tappable = explanation != null || e.detail != null;
               return (
                 <Pressable
-                  disabled={!explanation}
-                  onPress={() => explanation && setSelected(explanation)}>
+                  disabled={!tappable}
+                  onPress={() => {
+                    if (explanation) {
+                      setSelected(explanation);
+                    } else if (e.detail) {
+                      setDetailText(e.detail);
+                    }
+                  }}>
                   <Text style={styles.line}>
                     <Text style={{color: toneColor[e.tone] ?? '#8B93A7'}}>
                       {kindPrefix[e.kind]}{'  '}
@@ -224,6 +236,9 @@ export default function ScormConsole({
                       <Text style={styles.repeat}> ×{item.repeat}</Text>
                     )}
                     {explanation && <Text style={styles.hint}> ⌾</Text>}
+                    {!explanation && e.detail != null && (
+                      <Text style={styles.hint}> ▤</Text>
+                    )}
                   </Text>
                 </Pressable>
               );
@@ -236,6 +251,51 @@ export default function ScormConsole({
           />
         </>
       )}
+
+      <Modal
+        visible={detailText != null}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setDetailText(null)}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setDetailText(null)}>
+          <Pressable style={styles.sheet}>
+            <View style={styles.sheetHandleRow}>
+              <View style={styles.sheetHandle} />
+            </View>
+            <Pressable
+              style={styles.decodeHeader}
+              onPress={() => {
+                if (detailText) {
+                  Clipboard.setString(detailText);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }
+              }}>
+              <Text style={styles.decodeLabel}>📦 本次 LMSCommit 提交內容</Text>
+              {copied ? (
+                <Text style={styles.copiedText}>已複製 ✓</Text>
+              ) : (
+                <Text style={styles.copyHint}>點此複製全文</Text>
+              )}
+            </Pressable>
+            <ScrollView
+              style={styles.decodeScroll}
+              nestedScrollEnabled
+              bounces={false}>
+              <Text style={styles.decodeValue} selectable>
+                {detailText}
+              </Text>
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setDetailText(null)}>
+              <Text style={styles.closeText}>關閉</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <Modal
         visible={selected != null}

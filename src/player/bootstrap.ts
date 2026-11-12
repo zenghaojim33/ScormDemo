@@ -84,19 +84,50 @@ export function buildBootstrapScript(seed: SeedState | null): string {
       return '';
     }
   }
+  // 從 scorm-again CMI model 撈逐題作答記錄（cmi.interactions.N.*）
+  function readInteractions() {
+    try {
+      var arr = api.cmi.interactions;
+      var children = arr && arr.childArray ? arr.childArray : [];
+      return children.map(function(it, i) {
+        function val(v) { return v === null || v === undefined ? '' : String(v); }
+        var correct = [];
+        try {
+          var cr = it.correct_responses;
+          var crArr = cr && cr.childArray ? cr.childArray : [];
+          for (var j = 0; j < crArr.length; j++) { correct.push(val(crArr[j].pattern)); }
+        } catch (e) {}
+        return {
+          index: i,
+          id: val(it.id),
+          type: val(it.type),
+          weighting: val(it.weighting),
+          correctResponses: correct,
+          studentResponse: val(it.student_response),
+          result: val(it.result),
+          latency: val(it.latency),
+          time: val(it.time),
+        };
+      });
+    } catch (e) { return []; }
+  }
+  function snapshot() {
+    var suspendRaw = api.cmi.suspend_data || '';
+    return {
+      lessonStatus: api.cmi.core.lesson_status,
+      scoreRaw: api.cmi.core.score.raw,
+      scoreMin: api.cmi.core.score.min,
+      scoreMax: api.cmi.core.score.max,
+      suspendData: suspendRaw,
+      suspendDecoded: decodeSuspendData(suspendRaw),
+      sessionTime: lastSessionTime,
+      totalTime: api.cmi.core.total_time,
+      interactions: readInteractions(),
+    };
+  }
   function postState() {
     try {
-      var suspendRaw = api.cmi.suspend_data || '';
-      post({ kind: 'state', payload: {
-        lessonStatus: api.cmi.core.lesson_status,
-        scoreRaw: api.cmi.core.score.raw,
-        scoreMin: api.cmi.core.score.min,
-        scoreMax: api.cmi.core.score.max,
-        suspendData: suspendRaw,
-        suspendDecoded: decodeSuspendData(suspendRaw),
-        sessionTime: lastSessionTime,
-        totalTime: api.cmi.core.total_time,
-      }});
+      post({ kind: 'state', payload: snapshot() });
     } catch (e) {}
   }
 
@@ -110,7 +141,12 @@ export function buildBootstrapScript(seed: SeedState | null): string {
     postState();
   });
   api.on('LMSCommit', function() {
-    post({ kind: 'event', ev: 'LMSCommit', tone: 'commit', msg: 'LMSCommit() — demo 無 backend，state 回傳 app' });
+    var snap = snapshot();
+    post({ kind: 'event', ev: 'LMSCommit', tone: 'commit',
+      msg: 'LMSCommit() — demo 無 backend，state 回傳 app（'
+        + snap.interactions.length + ' 題 interactions）' });
+    // 點擊 commit 行可展開的完整提交內容
+    post({ kind: 'commit', payload: snap });
     postState();
   });
   api.on('LMSSetValue.cmi.*', function(el, val) {
@@ -129,6 +165,7 @@ export function buildBootstrapScript(seed: SeedState | null): string {
     level: 'INFO',
     msg: 'scorm-again Scorm12API 已注入 (documentStart)，window.API 就緒；entry=' + core.entry,
   });
+
 })();
 `;
 }

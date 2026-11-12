@@ -14,10 +14,11 @@ const courses = coursesData as Course[];
 
 interface Props {
   onSelect: (course: Course) => void;
+  onQuizJump: (course: Course) => void;
   getProgress: (id: string) => CourseProgress | undefined;
 }
 
-export default function CourseListScreen({onSelect, getProgress}: Props) {
+export default function CourseListScreen({onSelect, onQuizJump, getProgress}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -62,6 +63,12 @@ export default function CourseListScreen({onSelect, getProgress}: Props) {
                 {item.scormType === 'sco' ? '單一 SCO' : item.scormType}
                 {progress?.suspendData ? ' · 可續玩' : ''}
               </Text>
+              <TouchableOpacity
+                style={styles.quizJumpButton}
+                activeOpacity={0.7}
+                onPress={() => onQuizJump(item)}>
+                <Text style={styles.quizJumpText}>🧪 直達 Quiz（跳過學習）</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           );
         }}
@@ -132,5 +139,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 13,
     marginTop: 6,
+  },
+  quizJumpButton: {
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#FDD07A',
+    borderStyle: 'dashed',
+    borderRadius: 8,
+    backgroundColor: '#FFFAEB',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  quizJumpText: {
+    color: '#B54708',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

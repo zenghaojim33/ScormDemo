@@ -158,6 +158,16 @@ export default function PlayerScreen({course, seed, onBack, onProgress}: Props) 
         case 'log':
           append({kind: 'log', tone: msg.level, text: `[${msg.level}] ${msg.msg}`});
           break;
+        case 'commit': {
+          const p = msg.payload ?? {};
+          append({
+            kind: 'event',
+            tone: 'commit',
+            text: `📦 本次 commit 內容（可點擊查看詳情）`,
+            detail: JSON.stringify(p, null, 2),
+          });
+          break;
+        }
         case 'state': {
           const p = msg.payload ?? {};
           setSessionTime(p.sessionTime);
@@ -168,6 +178,7 @@ export default function PlayerScreen({course, seed, onBack, onProgress}: Props) 
           const hint = progressHints(
             typeof p.suspendDecoded === 'string' ? p.suspendDecoded : undefined,
           );
+          const interactions = Array.isArray(p.interactions) ? p.interactions : [];
           append({
             kind: 'state',
             tone: 'state',
@@ -175,7 +186,7 @@ export default function PlayerScreen({course, seed, onBack, onProgress}: Props) 
               p.scoreRaw ?? '—'
             } · suspend_data=${(p.suspendData || '').length}c · session=${
               p.sessionTime ?? '—'
-            }${hint ? `\n       ↳ 真實進度線索: ${hint}` : ''}`,
+            } · interactions=${interactions.length}${hint ? `\n       ↳ 真實進度線索: ${hint}` : ''}`,
           });
           onProgress(course.id, {
             status: toStatus(p.lessonStatus ?? '', (p.suspendData || '').length > 0),
@@ -187,7 +198,13 @@ export default function PlayerScreen({course, seed, onBack, onProgress}: Props) 
                     max: Number(p.scoreMax ?? 100),
                   }
                 : undefined,
+            // 關鍵：suspend_data / total_time / lesson_status 必須隨快照存倉，
+            // 否則下次進入 seed 為 null → ab-initio → 無法恢復
+            suspendData: (p.suspendData || '').length ? p.suspendData : undefined,
+            totalTime: p.totalTime || undefined,
+            lastStatus: p.lessonStatus || undefined,
             lastPlayedAt: new Date().toISOString(),
+            interactions,
           });
           break;
         }
@@ -247,6 +264,7 @@ export default function PlayerScreen({course, seed, onBack, onProgress}: Props) 
                 : phase === 'terminated'
                 ? '已结束'
                 : '等待内容初始化'}
+              {seed ? ` · 种子${seed.suspendData?.length ?? 0}c` : ' · 无种子'}
               {sessionTime ? ` · 已学 ${sessionTime}` : ''}
               {typicalLabel ? ` / ${typicalLabel}` : ''}
             </Text>
